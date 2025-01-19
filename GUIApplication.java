@@ -2,68 +2,75 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import static java.awt.BorderLayout.*;
 
-public class GUIApplication {
+public class Main {
         public static void main(String[] args) {
 
             JFrame frame = new JFrame();
-            frame.setVisible(true);
-            frame.setSize(800, 600);
-            frame.setLayout(new GridLayout(4, 2));
+            frame.setLayout(new BorderLayout());
+
             JPanel buttonPanel = new JPanel(new FlowLayout());
-            JPanel textPanel = new JPanel(new FlowLayout());
+            JPanel inputPanel = new JPanel(new GridLayout(2, 3));
+            JPanel outputPanel = new JPanel(new BorderLayout());
 
             JButton eurToUSD = new JButton("EUR To USD");
-            JLabel label1 = new JLabel("EUR To USD");
-            JTextField eurText = new JTextField(10);
+            JLabel label1 = new JLabel("EUR:");
+            JTextField eurText = new JTextField(3);
             JButton usdToEUR = new JButton("USD To EUR");
-            JLabel label2 = new JLabel("USD To EUR");
-            JTextField usdText = new JTextField(5);
-            JTextArea output = new JTextArea();
-            output.setEditable(false);
+            JLabel label2 = new JLabel("USD:");
+            JTextField usdText = new JTextField(3);
 
-            //Using user input and classes for conversion from EUR to USD
+            JTextArea output = new JTextArea(2,3);
+            output.setEditable(false);
+            //using user input and classes for conversion from EUR to USD
             eurToUSD.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e){
                     String eurInput = eurText.getText();
+                    //checking for validity of input
                if(eurInput.matches("\\d*\\.?\\d+")){
+                   //conversion using ConvertEUR() method
                    double eur = Double.parseDouble(eurInput);
                    EurUsd eurUsd = new EurUsd(eur);
                    double convertedEUR = eurUsd.ConvertEUR();
                    output.setText("Converted EUR to " + convertedEUR + "USD");
                }
-               else { System.out.println("Input a number.");}
+               else { output.setText("Input a valid number.");}
                 }
             });
 
-            //Using user input and classes for conversion from USD to EUR
+            //using user input and classes for conversion from USD to EUR
             usdToEUR.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     String usdInput = usdText.getText();
+                    //checking for validity of input
                     if(usdInput.matches("\\d*\\.?\\d+")){
+                        //conversion using ConvertUSD() method
                         double usd = Double.parseDouble(usdInput);
                         UsdEur usdEur = new UsdEur(usd);
                         double convertedUSD = usdEur.ConvertUSD();
                         output.setText("Converted USD to " + convertedUSD + "EUR");
                     }
-                    else { System.out.println("Input a number.");}
+                    else { output.setText("Input a valid number.");}
                 }
             });
-
-            frame.setVisible(true);
             buttonPanel.add(eurToUSD);
             buttonPanel.add(usdToEUR);
-            textPanel.add(label1);
-            textPanel.add(eurText);
-            textPanel.add(label2);
-            textPanel.add(usdText);
-            textPanel.add(output);
-            frame.add(buttonPanel);
-            frame.add(textPanel);
+            inputPanel.add(label1);
+            inputPanel.add(eurText);
+            inputPanel.add(label2);
+            inputPanel.add(usdText);
+            outputPanel.add(output, BorderLayout.CENTER);
+            frame.add(buttonPanel, NORTH);
+            frame.add(inputPanel, CENTER);
+            frame.add(outputPanel, SOUTH);
+
+            frame.pack();
+            frame.setVisible(true);
         }
 }
 
-//conversion rates from 14th January for EUR to USD
+//class operates with inputted value of EUR and uses a fixed exchange rate to turn into USD
 class EurUsd {
     double eur;
 
@@ -75,7 +82,7 @@ class EurUsd {
     }
 }
 
-//conversion rates from 14th January for USD to EUR
+//class operates with inputted value of USD and uses a fixed exchange rate to turn into EUR
 class UsdEur {
     double usd;
 
